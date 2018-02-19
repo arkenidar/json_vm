@@ -2,27 +2,26 @@
 var program_for_not_gate=
 {
 	"start": {
-		"type": "copy",
-		"read": "in",
-		"write": "ps",
-		"next": "select for inverting input"
+		"type": "copy_bit",
+		"read": "input",
+		"write": "path_selector",
+		"next": "select path for inverting input"
 	},
-	"select for inverting input": {
-		"type": "select",
-		"selector": "ps",
+	"select path for inverting input": {
+		"type": "path_select",
 		"select0": "output 1",
 		"select1": "output 0"
 	},
 	"output 0": {
-		"type": "copy",
+		"type": "copy_bit",
 		"read": "0",
-		"write": "out",
+		"write": "output",
 		"next": "stop"
 	},
 	"output 1": {
-		"type": "copy",
+		"type": "copy_bit",
 		"read": "1",
-		"write": "out",
+		"write": "output",
 		"next": "stop"
 	}
 }
@@ -51,23 +50,24 @@ function execute(program){
 
     var memory={"0":0, "1":1}
     function read(from){
-        if(from=="in") return read_input()
+        if(from=="input") return read_input()
         else return memory[from]
     }
     function write(to, what){
-        if(to=="out") write_output("output: "+what)
+        if(to=="output") write_output("output: "+what)
         else memory[to]=what
     }
 
     var label="start"
     while(label!="stop"){
         instruction=program[label]
-        if(instruction.type=="copy"){
+        console.log(label, instruction)
+        if(instruction.type=="copy_bit"){
             write(instruction.write, read(instruction.read))
             label=instruction.next
-        }else if(instruction.type=="select"){
+        }else if(instruction.type=="path_select"){
             var table={0: "select0", 1: "select1"}
-            label=instruction[table[read(instruction.selector)]]
+            label=instruction[table[read("path_selector")]]
         }
     }
 }
