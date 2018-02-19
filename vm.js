@@ -4,11 +4,11 @@ var program_for_not_gate=
 	"start": {
 		"type": "copy_bit",
 		"read": "input",
-		"write": "path_selector",
+		"write": "path_selector_bit",
 		"next": "select path for inverting input"
 	},
 	"select path for inverting input": {
-		"type": "path_select",
+		"type": "select_path",
 		"select0": "output 1",
 		"select1": "output 0"
 	},
@@ -65,9 +65,9 @@ function execute(program){
         if(instruction.type=="copy_bit"){
             write(instruction.write, read(instruction.read))
             label=instruction.next
-        }else if(instruction.type=="path_select"){
+        }else if(instruction.type=="select_path"){
             var table={0: "select0", 1: "select1"}
-            label=instruction[table[read("path_selector")]]
+            label=instruction[table[read("path_selector_bit")]]
         }
     }
 }
