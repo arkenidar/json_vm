@@ -25,7 +25,31 @@ var program_for_not_gate=
 		"next": "stop"
 	}
 }
-execute(program_for_not_gate)
+
+var program_for_not_gate_combined=
+{
+	"start": {
+		"type": "copy_bit_and_select_path",
+		"read": "input",
+		"write": "path_selector_bit",
+		"select0": "output 1",
+		"select1": "output 0"
+	},
+	"output 0": {
+		"type": "copy_bit",
+		"read": "0",
+		"write": "output",
+		"next": "stop"
+	},
+	"output 1": {
+		"type": "copy_bit",
+		"read": "1",
+		"write": "output",
+		"next": "stop"
+	}
+}
+
+execute(program_for_not_gate_combined)
 
 function execute(program){
 
@@ -58,6 +82,7 @@ function execute(program){
         else memory[to]=what
     }
 
+    var table={0: "select0", 1: "select1"}
     var label="start"
     while(label!="stop"){
         instruction=program[label]
@@ -66,7 +91,9 @@ function execute(program){
             write(instruction.write, read(instruction.read))
             label=instruction.next
         }else if(instruction.type=="select_path"){
-            var table={0: "select0", 1: "select1"}
+            label=instruction[table[read("path_selector_bit")]]
+        }else if(instruction.type=="copy_bit_and_select_path"){
+            write(instruction.write, read(instruction.read))
             label=instruction[table[read("path_selector_bit")]]
         }
     }
