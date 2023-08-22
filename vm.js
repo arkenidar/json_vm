@@ -1,3 +1,28 @@
+//========== HTML Console option (opening)
+
+var html_console_out
+
+function html_console_log_setup(){
+    if(typeof document == "undefined") return
+    html_console_out = document.querySelector("#console_out")
+    if(!html_console_out) alert("#console_out not found")
+}
+
+html_console_log_setup()
+
+function html_console_log(...args){
+    if(typeof document == "undefined") return
+    if(!html_console_out) return
+    var out_text = [...args].join(" ")+"\n"
+    html_console_out.textContent+=out_text
+}
+
+function console_log(...args){
+    console.log(...args)
+    html_console_log(...args)
+}
+
+//========== HTML Console option (closing)
 
 var program_for_not_gate=
 {
@@ -69,7 +94,7 @@ function execute(program){
         }
     }
     function write_output(what){
-        console.log(what)
+        console_log(what)
     }
 
     var memory={"0":0, "1":1}
